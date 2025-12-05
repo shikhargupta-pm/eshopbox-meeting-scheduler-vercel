@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eshopbox Experts - Demo Scheduler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo: Local file -->
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Eshopbox Logo" class="logo">
+        </div>
+    </header>
+
+    <!-- Main Content - Two Column Layout -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Left Column: Form -->
+            <div class="left-column">
+                <div class="form-container">
+                    <h1>Eshopbox Experts - Demo Scheduler</h1>
+                    <p class="subtitle">Qualify a prospect and route them to the right expert based on
+                        availability, volume and service.</p>
+
+                    <form id="scheduleForm">
+                        <!-- Date & Time Section -->
+                        <div class="form-section">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="date">Preferred date</label>
+                                    <input type="date" id="date" name="date" required class="form-input">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="time_slot">Time slot (1 hour)</label>
+                                    <select id="time_slot" name="time_slot" required class="form-input">
+                                        <option value="" disabled selected>Select time slot</option>
+                                        <option value="10:30">10:30 - 11:30</option>
+                                        <option value="11:30">11:30 - 12:30</option>
+                                        <option value="12:30">12:30 - 13:30</option>
+                                        <option value="13:30">13:30 - 14:30</option>
+                                        <option value="14:30">14:30 - 15:30</option>
+                                        <option value="15:30">15:30 - 16:30</option>
+                                        <option value="16:30">16:30 - 17:30</option>
+                                        <option value="17:30">17:30 - 18:30</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Volume Section -->
+                        <div class="form-section">
+                            <label class="section-label">Monthly order volume</label>
+                            <div class="card-group">
+                                <input type="radio" id="volume_low" name="volume" value="1000" required>
+                                <label for="volume_low" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">
+                                            < 3,000 orders / month</span>
+                                        </span>
+                                </label>
+
+                                <input type="radio" id="volume_high" name="volume" value="5000">
+                                <label for="volume_high" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">≥ 3,000 orders / month</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Service Section -->
+                        <div class="form-section">
+                            <label class="section-label">Service</label>
+                            <div class="card-group">
+                                <input type="radio" id="service_ship" name="service" value="Ship" required>
+                                <label for="service_ship" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">Ship</span>
+                                    </span>
+                                </label>
+
+                                <input type="radio" id="service_fulfil" name="service" value="Fulfil">
+                                <label for="service_fulfil" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">Fulfil</span>
+                                    </span>
+                                </label>
+
+                                <input type="radio" id="service_both" name="service" value="Both">
+                                <label for="service_both" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">Both</span>
+                                    </span>
+                                </label>
+
+                                <input type="radio" id="service_plus" name="service" value="Eshopbox Plus">
+                                <label for="service_plus" class="card-label">
+                                    <span class="card-content">
+                                        <span class="card-title">Eshopbox Plus</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <p class="helper-text">The system will auto-assign the most suitable Eshopbox expert
+                            and return their Google Calendar booking link.</p>
+
+                        <button type="submit" id="submitBtn" class="submit-btn">Find available expert</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="right-column">
+                <div id="resultCard" class="result-card hidden">
+                    <div class="success-badge">
+                        <span class="badge-icon">✓</span>
+                        <span class="badge-text">Live · Google Meet booking</span>
+                    </div>
+
+                    <h2>Meeting Ready!</h2>
+                    <p class="result-subtitle">You have been matched with:</p>
+
+                    <div class="ae-info">
+                        <h3 id="aeName">Expert Name</h3>
+                        <p id="aeEmail">email@example.com</p>
+                    </div>
+
+                    <a id="aeLink" href="#" target="_blank" class="book-btn">Book Meeting Now</a>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <p>Fill in the form to find your expert</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Unavailable</h2>
+            <p>We couldn't find an available expert at this time.</p>
+            <p>Please contact our support team:</p>
+            <p><strong>admin@eshopbox.com</strong></p>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Did you book a meeting with the expert?</h2>
+            <p>Please confirm if you successfully booked a meeting</p>
+            <div class="modal-buttons">
+                <button id="confirmYesBtn" class="modal-btn confirm-btn">Yes, I booked it!</button>
+                <button id="confirmNoBtn" class="modal-btn cancel-btn">No, find another expert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Copyright © 2025 Eshopbox Ecommerce Private Limited All Rights Reserved</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
